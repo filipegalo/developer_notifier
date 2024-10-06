@@ -1,0 +1,44 @@
+# Virtual environment
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.env.*
+
+# Database files
+*.db
+*.sqlite3
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+
+# Cache directories
+.cache
+.pytest_cache/
+
+# Logs
+*.log
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Compiled Python files
+*.pyc
+
+# Miscellaneous
+*.DS_Store
+Thumbs.db

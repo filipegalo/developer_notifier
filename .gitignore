@@ -1,0 +1,59 @@
+# Virtual environment
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Database files
+*.db
+*.sqlite3
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+
+# Cache directories
+.cache
+.pytest_cache/
+
+# Logs
+logs
+*.log
+
+# IDE specific files
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Compiled Python files
+*.pyc
+
+# Miscellaneous
+*.DS_Store
+Thumbs.db
+
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+dist
+
+# Node dependencies
+node_modules
+
+# IDE
+.idea/
+.vscode/
