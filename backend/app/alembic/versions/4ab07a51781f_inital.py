@@ -1,8 +1,8 @@
 """inital
 
-Revision ID: 3b4baaf4d0c1
+Revision ID: 4ab07a51781f
 Revises: 
-Create Date: 2024-10-05 00:18:57.039404
+Create Date: 2024-10-07 18:32:34.886841
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision = '3b4baaf4d0c1'
+revision = '4ab07a51781f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,6 +35,22 @@ def upgrade():
     op.create_index(op.f('ix_github_pull_requests_pull_request'), 'github_pull_requests', ['pull_request'], unique=True)
     op.create_index(op.f('ix_github_pull_requests_status'), 'github_pull_requests', ['status'], unique=False)
     op.create_index(op.f('ix_github_pull_requests_title'), 'github_pull_requests', ['title'], unique=False)
+    op.create_table('gitlab_merge_requests',
+    sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('status', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('merge_request', sa.Integer(), nullable=False),
+    sa.Column('repository', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('url', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('is_assigned', sa.Boolean(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_gitlab_merge_requests_merge_request'), 'gitlab_merge_requests', ['merge_request'], unique=True)
+    op.create_index(op.f('ix_gitlab_merge_requests_status'), 'gitlab_merge_requests', ['status'], unique=False)
+    op.create_index(op.f('ix_gitlab_merge_requests_title'), 'gitlab_merge_requests', ['title'], unique=False)
     op.create_table('jira_issues',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
@@ -58,6 +74,8 @@ def upgrade():
     sa.Column('github_org', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('github_user', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('github_api_url', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('gitlab_access_token', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('gitlab_api_url', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('user_name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -73,6 +91,10 @@ def downgrade():
     op.drop_index(op.f('ix_jira_issues_status'), table_name='jira_issues')
     op.drop_index(op.f('ix_jira_issues_issue'), table_name='jira_issues')
     op.drop_table('jira_issues')
+    op.drop_index(op.f('ix_gitlab_merge_requests_title'), table_name='gitlab_merge_requests')
+    op.drop_index(op.f('ix_gitlab_merge_requests_status'), table_name='gitlab_merge_requests')
+    op.drop_index(op.f('ix_gitlab_merge_requests_merge_request'), table_name='gitlab_merge_requests')
+    op.drop_table('gitlab_merge_requests')
     op.drop_index(op.f('ix_github_pull_requests_title'), table_name='github_pull_requests')
     op.drop_index(op.f('ix_github_pull_requests_status'), table_name='github_pull_requests')
     op.drop_index(op.f('ix_github_pull_requests_pull_request'), table_name='github_pull_requests')

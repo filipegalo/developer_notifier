@@ -88,6 +88,8 @@ const fetchSettings = async () => {
       github_org: data.github_org || '',
       github_api_url: data.github_api_url || '',
       github_user: data.github_user || '',
+      gitlab_access_token: '',
+      gitlab_api_url: data.gitlab_api_url || '',
       user_name: data.user_name || ''
     };
   } catch (error) {
@@ -99,7 +101,7 @@ const hasChanges = computed(() => {
   if (!settings.value || !originalSettings.value) return false;
   
   return Object.keys(settings.value).some(key => {
-    if (key === 'jira_api_key' || key === 'github_access_token') {
+    if (key === 'jira_api_key' || key === 'github_access_token' || key === 'gitlab_access_token') {
       return settings.value[key] !== '';
     }
     return settings.value[key] !== originalSettings.value[key];
@@ -120,6 +122,9 @@ const saveSettings = async () => {
     }
     if (!settingsToSave.github_access_token) {
       delete settingsToSave.github_access_token;
+    }
+    if (!settingsToSave.gitlab_access_token) {
+      delete settingsToSave.gitlab_access_token;
     }
 
     const response = await fetch(`${API_BASE_URL}/settings`, {
@@ -157,7 +162,7 @@ const formatKey = (key) => {
 };
 
 const shouldMask = (key) => {
-  return ['jira_api_key', 'github_access_token'].includes(key);
+  return ['jira_api_key', 'github_access_token', 'gitlab_access_token'].includes(key);
 };
 
 watch(() => props.show, (newValue) => {

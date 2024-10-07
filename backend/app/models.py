@@ -27,12 +27,23 @@ class GithubPullRequest(BaseModel, table=True):
     url: str = Field(nullable=False)
     is_assigned: bool = Field(default=False)
 
+class GitlabMergeRequest(BaseModel, table=True):
+    __tablename__ = "gitlab_merge_requests"
+    merge_request: int = Field(index=True, unique=True)
+    repository: str = Field(nullable=False)
+    url: str = Field(nullable=False)
+    is_assigned: bool = Field(default=True)
+
 class JiraIssueResponse(SQLModel):
     issues: list[JiraIssue]
     count: int
 
 class GithubPullRequestResponse(SQLModel):
     pull_requests: list[GithubPullRequest]
+    count: int
+
+class GitlabMergeRequestResponse(SQLModel):
+    merge_requests: list[GitlabMergeRequest]
     count: int
 
 class Settings(SQLModel, table=True):
@@ -46,6 +57,8 @@ class Settings(SQLModel, table=True):
     github_org: str | None = Field(nullable=True)
     github_user: str | None = Field(nullable=True)
     github_api_url: str | None = Field(nullable=True)
+    gitlab_access_token: str | None = Field(nullable=True)
+    gitlab_api_url: str | None = Field(nullable=True)
     user_name: str
 
 class SettingsResponse(SQLModel):
@@ -54,6 +67,7 @@ class SettingsResponse(SQLModel):
     github_api_url: str | None = None
     github_org: str | None = None
     github_user: str | None = None
+    gitlab_api_url: str | None = None
     user_name: str
 
 class ErrorResponse(BaseModel):

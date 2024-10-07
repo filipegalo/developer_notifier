@@ -21,15 +21,16 @@
       </div>
     </header>
     <main class="flex-grow">
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
           <div v-if="isLoading" class="text-center py-12">
             <LoadingSpinner />
             <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Loading settings...</p>
           </div>
-          <div v-else-if="showComponents" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <IssuesList v-if="showJira" @loading="updateLoadingState" />
-            <PullRequestsList v-if="showGithub" @loading="updateLoadingState" />
+          <div v-else-if="showComponents" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <IssuesList v-if="showJira" @loading="updateLoadingState" class="col-span-1" />
+            <PullRequestsList v-if="showGithub" @loading="updateLoadingState" class="col-span-1" />
+            <MergeRequestsList v-if="showGitlab" @loading="updateLoadingState" class="col-span-1" />
           </div>
           <div v-else class="text-center py-12">
             <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
@@ -56,6 +57,7 @@
 import { ref, computed, onMounted } from 'vue';
 import IssuesList from '~/components/IssuesList.vue';
 import PullRequestsList from '~/components/PullRequestsList.vue';
+import MergeRequestsList from '~/components/MergeRequestsList.vue';
 import ApiStatus from '~/components/ApiStatus.vue';
 import DarkModeToggle from '~/components/DarkModeToggle.vue';
 import LoadingSpinner from '~/components/LoadingSpinner.vue';
@@ -69,10 +71,11 @@ const hasSettings = ref(false);
 const settingsError = ref(null);
 const showJira = ref(false);
 const showGithub = ref(false);
+const showGitlab = ref(false);
 const userName = ref('');
 
 const showComponents = computed(() => {
-  return showJira.value || showGithub.value;
+  return showJira.value || showGithub.value || showGitlab.value;
 });
 
 const greeting = computed(() => {
@@ -80,7 +83,8 @@ const greeting = computed(() => {
   if (hour < 6) return 'Good night';
   if (hour < 12) return 'Good morning';
   if (hour < 18) return 'Good afternoon';
-  if (hour < 22) return 'Good evening';
+  if (hour < 20) return 'Good evening';
+  return 'Good night';
 });
 
 const updateLoadingState = (componentName, loading) => {
@@ -118,8 +122,9 @@ const fetchSettings = async () => {
       if (hasSettings.value) {
         showJira.value = !!data.jira_api_url;
         showGithub.value = !!data.github_api_url;
+        showGitlab.value = !!data.gitlab_api_url;
         userName.value = data.user_name || '';
-        if (!showJira.value && !showGithub.value) {
+        if (!showJira.value && !showGithub.value && !showGitlab.value) {
           settingsError.value = "Configure your project settings to get started.";
         }
       } else {
